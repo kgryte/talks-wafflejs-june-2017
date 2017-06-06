@@ -1,0 +1,35 @@
+{
+  "name": "talk-wafflejs-june-2017",
+  "version": "0.0.0",
+  "description": "Talk for WaffleJS (June, 2017).",
+  "author": {
+    "name": "Athan Reines",
+    "email": "kgryte@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "Athan Reines",
+      "email": "kgryte@gmail.com"
+    }
+  ],
+  "scripts": {},
+  "main": "",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kgryte/talks-wafflejs-june-2017.git"
+  },
+  "keywords": [
+		"talk",
+		"slides",
+		"presentation"
+	],
+  "bugs": {
+    "url": "https://github.com/github.com/kgryte/talks-wafflejs-june-2017/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "jshint": "2.x.x",
+    "jshint-stylish": "2.x.x"
+  },
+  "license": ""
+}
