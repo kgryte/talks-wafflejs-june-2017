@@ -137,12 +137,13 @@
 					</ul>
 					<ul class="column column-5">
 						<li>Compact</li>
-						<li>Efficient to Parse</li>
+						<li>Parsing</li>
 						<li>Typed</li>
-						<li>AOT Optimization</li>
-						<li>No Deopts</li>
+						<li>Optimization</li>
+						<li>Deoptimization</li>
 						<li>Lower-level</li>
-						<li>Better Performance</li>
+						<li>GC</li>
+						<li>Performance</li>
 					</ul>
 				</div>
 
@@ -152,9 +153,216 @@
 			</section>
 
 			<section class="center">
-				<h2 class="no-text-transform">Heading</h2>
-				<pre><code class="hljs javascript" contenteditable>
-Code.
+				<pre><code class="hljs c" contenteditable>
+// File: hypot.c
+#include &lt;math.h&gt;
+
+double c_hypot( const double x, const double y ) {
+    double tmp;
+    double a;
+    double b;
+    if ( isnan( x ) || isnan( y ) ) {
+        return NAN;
+    }
+    if ( isinf( x ) || isinf( y ) ) {
+        return INFINITY;
+    }
+    a = x;
+    b = y;
+    if ( a &lt; 0.0 ) {
+        a = -a;
+    }
+    if ( b &lt; 0.0 ) {
+        b = -b;
+    }
+    if ( a &lt; b ) {
+        tmp = b;
+        b = a;
+        a = tmp;
+    }
+    if ( a == 0.0 ) {
+        return 0.0;
+    }
+    b /= a;
+    return a * sqrt( 1.0 + (b*b) );
+}
+				</code></pre>
+
+				<aside class="notes">
+
+				</aside>
+			</section>
+
+			<section class="center">
+				<pre><code class="hljs bash" contenteditable>
+$ emcc -std=c99 -O3 -s WASM=1 -s SIDE_MODULE=1 -o hypot.wasm hypot.c
+				</code></pre>
+
+				<aside class="notes">
+
+				</aside>
+			</section>
+
+			<section class="center">
+				<pre><code class="hljs text" contenteditable>
+0061 736d 0100 0000 018c 8080 8000 0260
+017c 017c 6002 7c7c 017c 0382 8080 8000
+0101 0484 8080 8000 0170 0000 0583 8080
+8000 0100 0106 8180 8080 0000 0794 8080
+8000 0206 6d65 6d6f 7279 0200 0763 5f68
+7970 6f74 0000 0af3 8180 8000 01ed 8180
+8000 0402 7e01 7c01 7f01 7c44 0000 0000
+0000 f87f 2106 0240 0240 2000 bd42 ffff
+ffff ffff ffff ff00 8322 0242 8080 8080
+8080 80f8 ff00 560d 0020 01bd 42ff ffff
+ffff ffff ffff 0083 2203 4280 8080 8080
+8080 f8ff 0056 0d00 4400 0000 0000 00f0
+7f21 0620 0242 8080 8080 8080 80f8 ff00
+510d 0020 0342 8080 8080 8080 80f8 ff00
+510d 0044 0000 0000 0000 0000 2106 2001
+9a20 0120 0144 0000 0000 0000 0000 631b
+2201 2000 9a20 0020 0044 0000 0000 0000
+0000 631b 2200 2000 2001 6322 051b 2204
+4400 0000 0000 0000 0062 0d01 0b20 060f
+0b20 0420 0020 0120 051b 2004 a322 0020
+00a2 4400 0000 0000 00f0 3fa0 9fa2 0b
+				</code></pre>
+
+				<aside class="notes">
+
+				</aside>
+			</section>
+
+			<section class="center">
+				<pre><code class="hljs text" contenteditable>
+(module
+  (type $FUNCSIG$dd (func (param f64) (result f64)))
+  (table 0 anyfunc)
+  (memory $0 1)
+  (export "memory" (memory $0))
+  (export "c_hypot" (func $c_hypot))
+  (func $c_hypot (param $0 f64) (param $1 f64) (result f64)
+    (local $2 i64)
+    (local $3 i64)
+    (local $4 f64)
+    (local $5 i32)
+    (local $6 f64)
+    (set_local $6
+      (f64.const nan:0x8000000000000)
+    )
+    (block $label$0
+      (block $label$1
+        (br_if $label$1
+          (i64.gt_u
+            (tee_local $2
+              (i64.and
+                (i64.reinterpret/f64
+                  (get_local $0)
+                )
+                (i64.const 9223372036854775807)
+              )
+            )
+            (i64.const 9218868437227405312)
+          )
+        )
+        (br_if $label$1
+          (i64.gt_u
+            (tee_local $3
+              (i64.and
+                (i64.reinterpret/f64
+                  (get_local $1)
+                )
+                (i64.const 9223372036854775807)
+              )
+            )
+            (i64.const 9218868437227405312)
+          )
+        )
+        (set_local $6
+          (f64.const infinity)
+        )
+        (br_if $label$1
+          (i64.eq
+            (get_local $2)
+            (i64.const 9218868437227405312)
+          )
+        )
+        (br_if $label$1
+          (i64.eq
+            (get_local $3)
+            (i64.const 9218868437227405312)
+          )
+        )
+        (set_local $6
+          (f64.const 0)
+        )
+        (br_if $label$0
+          (f64.ne
+            (tee_local $4
+              (select
+                (tee_local $1
+                  (select
+                    (f64.neg
+                      (get_local $1)
+                    )
+                    (get_local $1)
+                    (f64.lt
+                      (get_local $1)
+                      (f64.const 0)
+                    )
+                  )
+                )
+                (tee_local $0
+                  (select
+                    (f64.neg
+                      (get_local $0)
+                    )
+                    (get_local $0)
+                    (f64.lt
+                      (get_local $0)
+                      (f64.const 0)
+                    )
+                  )
+                )
+                (tee_local $5
+                  (f64.lt
+                    (get_local $0)
+                    (get_local $1)
+                  )
+                )
+              )
+            )
+            (f64.const 0)
+          )
+        )
+      )
+      (return
+        (get_local $6)
+      )
+    )
+    (f64.mul
+      (get_local $4)
+      (f64.sqrt
+        (f64.add
+          (f64.mul
+            (tee_local $0
+              (f64.div
+                (select
+                  (get_local $0)
+                  (get_local $1)
+                  (get_local $5)
+                )
+                (get_local $4)
+              )
+            )
+            (get_local $0)
+          )
+          (f64.const 1)
+        )
+      )
+    )
+  )
+)
 				</code></pre>
 
 				<aside class="notes">
