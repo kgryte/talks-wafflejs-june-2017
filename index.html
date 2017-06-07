@@ -114,6 +114,14 @@
 			</section>
 
 			<section class="center">
+				<p>C/C++&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;x86/ARM</p>
+
+				<aside class="notes">
+
+				</aside>
+			</section>
+
+			<section class="center">
 				<p>C/C++&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;IR&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;x86/ARM</p>
 
 				<aside class="notes">
@@ -364,6 +372,53 @@ ffff ffff ffff 0083 2203 4280 8080 8080
   )
 )
 				</code></pre>
+
+				<aside class="notes">
+
+				</aside>
+			</section>
+
+			<section class="center">
+				<pre><code class="hljs javascript" contenteditable>
+var join = require( 'path' ).join;
+var readFileSync = require( 'fs' ).readFileSync;
+
+// Load the file:
+var buf = readFileSync( join( __dirname, 'hypot.wasm' ) );
+
+// Create a WebAssembly module:
+var m = new WebAssembly.Module( buf );
+
+// Define the module environment:
+var memory = new WebAssembly.Memory({ 'initial': 256 });
+var table = new WebAssembly.Table({ 'initial': 0, 'element': 'anyfunc' });
+var imports = { 'env': { 'memory': memory, 'memoryBase': 0, 'table': table, 'tableBase': 0 } };
+
+// Create an executable instance:
+var instance = new WebAssembly.Instance( m, imports );
+
+// Alias the exported function:
+var hypot = instance.exports.c_hypot;
+				</code></pre>
+
+				<aside class="notes">
+
+				</aside>
+			</section>
+
+			<section class="center">
+				<h2 class="no-text-transform">Comments</h2>
+
+				<div class="row">
+					<ul class="column column-2">&nbsp;
+					</ul>
+					<ul class="column column-6">
+						<li class="fragment">Toolchain Size</li>
+						<li class="fragment">Active Development</li>
+						<li class="fragment">Cross-browser Consensus</li>
+						<li class="fragment">Node Version 8</li>
+					</ul>
+				</div>
 
 				<aside class="notes">
 
