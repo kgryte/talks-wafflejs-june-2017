@@ -1,4 +1,4 @@
-# Web Assembly, Numeric Computing, and the Future of the Web
+# WebAssembly, Numeric Computing, and the Future of the Web
 
 > Talk for [WaffleJS][wafflejs] (June, 2017).
 
